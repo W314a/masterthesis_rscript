@@ -1,15 +1,15 @@
 # Installation of all needed packages and libraries ----
 # Packages
-install.packages("Seurat")
-install.packages("metap")
-install.packages("devtools")
-install.packages("remotes")
-install.packages("cowplot")
-install.packages("gridExtra")
-install.packages("BiocManager")
-BiocManager::install("EnhancedVolcano")
-BiocManager::install('multtest')
-BiocManager::install("clusterProfiler")
+install.packages("Seurat") # used for single cell RNA sequencing analysis
+install.packages("metap") # used for meta analysis of p-values
+install.packages("devtools") # helps installing, developing and managing R packages
+install.packages("remotes") # installing packages from GitHub or other remote sources
+install.packages("cowplot") # enhances ggplot2 with better multi-panel plots
+install.packages("gridExtra") # provides functions for arranging multiple plots on a grid
+install.packages("BiocManager") # used to install and manage Bioconductor packages
+BiocManager::install("EnhancedVolcano") # creates volcano plots for visualizing differential gene expression
+BiocManager::install('multtest') # provides multiple hypothesis testing correction methods
+BiocManager::install("clusterProfiler") # Used for functional enrichment analysis
 # Libraries
 library(dplyr)
 library(Seurat)
