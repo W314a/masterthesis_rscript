@@ -41,8 +41,8 @@ df@commands
 
 
 # Preparing the data set ----
-# Load the data set
-df <- readRDS("/Users/pia/Documents/Ausbildung und Arbeit/Studium/Master/SS24/Analyses/Bioinformatics/scRNAseq Data/scManz.integrated_od_markers_annotated_24.10.2023.rds")
+# Load the data set (read in the .rds file)
+df <- readRDS("/Users/***/Documents/****/*****.integrated_od_markers_annotated_24.10.2023.rds")
 # Setting the resolution to 0.5 (can be set to 0.1, 0.3, 0.5 or 0.8)
 Idents(df) <- "integrated_snn_res.0.5"
 
