@@ -41,8 +41,8 @@ df@commands
 
 
 # Preparing the data set ----
-# Load the data set (read in the .rds file)
-df <- readRDS("/Users/***/Documents/****/*****.integrated_od_markers_annotated_24.10.2023.rds")
+# Load the data set
+df <- readRDS("/Users/pia/Documents/Ausbildung und Arbeit/Studium/Master/SS24/Analyses/Bioinformatics/scRNAseq Data/scManz.integrated_od_markers_annotated_24.10.2023.rds")
 # Setting the resolution to 0.5 (can be set to 0.1, 0.3, 0.5 or 0.8)
 Idents(df) <- "integrated_snn_res.0.5"
 
@@ -112,7 +112,7 @@ df_no_Igs <- ScaleData(df_no_Igs)
 # Balloon plot for selected B-cell marker genes
 B_cell_Markers <- DotPlot(df_no_Igs, 
                           features = c("Igkc", "Iglc2", "Iglc3",
-                                       "Cr2", "Ms4a1", "Cd19", "Ebf1",
+                                       "Fcer2a","Cr2", "Ms4a1", "Cd19", "Ebf1",
                                        "Pou2af1","Xbp1", "Irf8", "Blnk", "Bach2", "Pax5", "Bcl6","Prdm1", "Fosb", "Irf4", "Tnfrsf13c", "Tnfrsf13b", "Tnfrsf17", 
                                        "Jchain")) & coord_flip()
 B_cell_Markers <- B_cell_Markers + scale_color_gradient2(high = "#f0a818", low = "#423e9e", mid = "grey")
@@ -190,7 +190,9 @@ IgA2vsAll <- FindMarkers(df_PC, ident.1 = "IgA 2", ident.2 = c("IgG2b/c", "IgG3"
 IgMvsAll <- FindMarkers(df_PC, ident.1 = "IgM", ident.2 = c("IgG2b/c", "IgG3", "IgA 1", "IgA 2", "IgG1"))
 # Comparing the two IgA PC clusters with one another
 IgA1vsIgA2 <- FindMarkers(df_PC, ident.1 = "IgA 2", ident.2 = "IgA 1")
-
+IgG1vsIgG <- FindMarkers(df_PC, ident.1 = "IgG1", ident.2 = c("IgG2b/c", "IgG3"))
+IgG2bcvsIgG <- FindMarkers(df_PC, ident.1 = "IgG2b/c", ident.2 = c("IgG1", "IgG3"))
+IgG3vsIgG <- FindMarkers(df_PC, ident.1 = "IgG3", ident.2 = c("IgG1", "IgG2b/c"))
 
 #### Chemokines Receptor genes ----
 ChemokineR_Genes <- c("Cxcr3", "Cxcr4", "Cxcr5", "Ccr7", "Ccr9", "Ccr10")
@@ -236,7 +238,7 @@ IgG1_Chemo <- EnhancedVolcano(IgG1vsAll_Chemokine_R,
 # Subset to include only the genes of interest
 IgG2bcvsAll_Chemokine_R <- IgG2bcvsAll[rownames(IgG2bcvsAll) %in% ChemokineR_Genes, ]
 # Plot the volcano plot using EnhancedVolcano
-IgG2bc_Chemo <- EnhancedVolcano(IgG1vsAll_Chemokine_R,
+IgG2bc_Chemo <- EnhancedVolcano(IgG2bcvsAll_Chemokine_R,
                                 lab = rownames(IgG2bcvsAll_Chemokine_R), selectLab = rownames(IgG2bcvsAll_Chemokine_R), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
                                 x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 1, FCcutoff = 1,
                                 title = 'PC clusters and IgG2b/c PCs', subtitle = '', caption = "") + theme_classic() + 
@@ -310,7 +312,7 @@ IgG1_Survival<- EnhancedVolcano(IgG1vsAll_Survival,
 # Subset to include only the genes of interest
 IgG2bcvsAll_Survival<- IgG2bcvsAll[rownames(IgG2bcvsAll) %in% Survival_Genes, ]
 # Plot the volcano plot using EnhancedVolcano
-IgG2bc_Survival<- EnhancedVolcano(IgG1vsAll_Survival,
+IgG2bc_Survival<- EnhancedVolcano(IgG2bcvsAll_Survival,
                                   lab = rownames(IgG2bcvsAll_Survival), selectLab = rownames(IgG2bcvsAll_Survival), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
                                   x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 1, 
                                   title = 'PC clusters and IgG2b/c PCs', subtitle = '', caption = "") + theme_classic()
@@ -338,7 +340,7 @@ legend_plot <- cowplot::get_legend(IgG2bc_Chemo)
 cowplot::plot_grid(Survival_Plots, legend_plot, rel_widths = c(20, 4))
 
 
-#### Integrin and additional genes
+#### Integrin and additional genes ----
 Int_Add_Genes <- c("Itga4", "Itgb2", "Cd44", "Cd28", "Cd37")
 
 # IgA 1 vs PCs
@@ -410,10 +412,9 @@ legend_plot <- cowplot::get_legend(IgG2bc_Chemo)
 cowplot::plot_grid(Int_Add_Plots, legend_plot, rel_widths = c(20, 4))
 
 
-#### IgA 1 vs IgA 2
+#### IgA 1 vs IgA 2 ----
 Homing_Genes <- c("Cxcr3", "Cxcr4", "Cxcr5", "Ccr7", "Ccr9", "Ccr10", "Tnfrsf13c", "Tnfrsf13b", "Tnfrsf17", "Il6ra", "Itga4", "Itgb2", "Cd44", "Cd28", "Cd37")
 
-# IgA 1 vs IgA 2
 # Subset to include only the genes of interest
 IgA1vsIgA2_Homing <- IgA1vsIgA2[rownames(IgA1vsIgA2) %in% Homing_Genes, ]
 # Plot the volcano plot using EnhancedVolcano
@@ -421,5 +422,47 @@ IgA_Homing <- EnhancedVolcano(IgA1vsIgA2_Homing,
                               lab = rownames(IgA1vsIgA2_Homing), selectLab = rownames(IgA1vsIgA2_Homing), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
                               x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 0.05,
                               title = 'IgA 1 and IgA 2 PCs', subtitle = '', caption = "") + theme_classic()
-IgA_Homing+ theme(legend.position = "right", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4)
+IgA_Homing + theme(legend.position = "right", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4)
 
+
+
+#### IgG-isotypes comparison ----
+
+# IgG1 vs IgG
+# Subset to include only the genes of interest
+IgG1vsIgG_Homing <- IgG1vsIgG[rownames(IgG1vsIgG) %in% Homing_Genes, ]
+# Plot the volcano plot using EnhancedVolcano
+IgG1_Homing <- EnhancedVolcano(IgG1vsIgG_Homing,
+                               lab = rownames(IgG1vsIgG_Homing), selectLab = rownames(IgG1vsIgG_Homing), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
+                               x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 0.05,
+                               title = 'IgG1 and IgG PCs', subtitle = '', caption = "") + theme_classic()
+IgG1_Homing + theme(legend.position = "right", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4)
+
+# IgG2bc vs IgG
+# Subset to include only the genes of interest
+IgG2bcvsIgG_Homing <- IgG2bcvsIgG[rownames(IgG2bcvsIgG) %in% Homing_Genes, ]
+# Plot the volcano plot using EnhancedVolcano
+IgG2bc_Homing <- EnhancedVolcano(IgG2bcvsIgG_Homing,
+                              lab = rownames(IgG2bcvsIgG_Homing), selectLab = rownames(IgG2bcvsIgG_Homing), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
+                              x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 0.05,
+                              title = 'IgG2b/c and IgG PCs', subtitle = '', caption = "") + theme_classic()
+IgG2bc_Homing + theme(legend.position = "right", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4)
+
+# IgG3 vs IgG
+# Subset to include only the genes of interest
+IgG3vsIgG_Homing <- IgG3vsIgG[rownames(IgG3vsIgG) %in% Homing_Genes, ]
+# Plot the volcano plot using EnhancedVolcano
+IgG3_Homing <- EnhancedVolcano(IgG3vsIgG_Homing,
+                               lab = rownames(IgG3vsIgG_Homing), selectLab = rownames(IgG3vsIgG_Homing), drawConnectors = TRUE, arrowheads = FALSE, labSize = 4, pointSize = 3,
+                               x = 'avg_log2FC', y = 'p_val_adj', pCutoff = 0.05,
+                               title = 'IgG3 and IgG PCs', subtitle = '', caption = "") + theme_classic()
+IgG3_Homing + theme(legend.position = "right", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4)
+
+# IgG Plots
+IgG_Plots <- cowplot::plot_grid(IgG2bc_Homing + theme(legend.position = "none", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4) + ylim(-2, 10),
+                                IgG3_Homing+ theme(legend.position = "none", plot.title = element_text(size = 12), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) + xlim(-4, 4) + ylim(-2, 10), 
+                                align = "vh")
+# legend
+legend_plot <- cowplot::get_legend(IgG2bc_Chemo)
+# Combine legend plot and Volcano Plots
+cowplot::plot_grid(IgG_Plots, legend_plot, rel_widths = c(20, 4))
