@@ -175,7 +175,14 @@ df_PC <- RenameIdents(df_PC, c("6" = "IgG1",
 ## Homing and survival molecules ----
 
 ### Visualisation as violin plots ----
+# Chemokine Receptors
 VlnPlot(df_PC, features = c("Cxcr3", "Cxcr4", "Cxcr5", "Ccr7", "Ccr9", "Ccr10"), 
+        pt.size = 0, y.max = 5, ncol = 3, cols = df_PC_palette)
+# Survival Factors
+VlnPlot(df_PC, features = c("Tnfrsf13c", "Tnfrsf13b", "Tnfrsf17", "Il6ra"), 
+        pt.size = 0, y.max = 5, ncol = 4, cols = df_PC_palette)
+# Integrins and additional molecules
+VlnPlot(df_PC, features = c("Itga4", "Itgb2", "Cd44", "Cd28", "Cd37"), 
         pt.size = 0, y.max = 5, ncol = 3, cols = df_PC_palette)
 
 ### Visualisation as Volcano Plots ----
